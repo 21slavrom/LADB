@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.draco.ladb"
-        minSdk 26
+        minSdk 30
         targetSdk 35
         versionCode 54
         versionName "2.5.6"
