@@ -11,9 +11,9 @@ android {
     defaultConfig {
         applicationId "com.draco.ladb"
         minSdk 30
-        targetSdk 34
-        versionCode 48
-        versionName "2.4.3.1"
+        targetSdk 35
+        versionCode 54
+        versionName "2.5.6"
 
         ndk {
             abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
