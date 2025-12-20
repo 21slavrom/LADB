@@ -4,6 +4,7 @@
     <string name="command_hint">Shell command</string>
     <string name="command_hint_waiting">Waiting for connection…</string>
 
+    <string name="pairing_notification">Pairing Notification</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="last_command">Last command</string>
     <string name="help">Help</string>

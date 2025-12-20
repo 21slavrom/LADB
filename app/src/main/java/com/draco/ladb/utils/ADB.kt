@@ -385,11 +385,11 @@ class ADB(private val context: Context) {
     /**
      * Ask the device to pair on Android 11+ devices
      */
-    fun pair(port: String, pairingCode: String): Boolean {
+    fun pair(port: String, pairingCode: String): String {
         val pairShell = adb(false, listOf("pair", "localhost:$port"))
 
         /* Sleep to allow shell to catch up */
-        Thread.sleep(5000)
+        Thread.sleep(1000)
 
         /* Pipe pairing code */
         PrintStream(pairShell.outputStream).apply {
@@ -398,14 +398,21 @@ class ADB(private val context: Context) {
         }
 
         /* Continue once finished pairing (or 10s elapses) */
-        pairShell.waitFor(10, TimeUnit.SECONDS)
-        pairShell.destroyForcibly().waitFor()
+        val exited = pairShell.waitFor(10, TimeUnit.SECONDS)
 
-        val killShell = adb(false, listOf("kill-server"))
-        killShell.waitFor(3, TimeUnit.SECONDS)
-        killShell.destroyForcibly()
+        val output = try {
+            val stdout = pairShell.inputStream.bufferedReader().use { it.readText() }
+            val stderr = pairShell.errorStream.bufferedReader().use { it.readText() }
+            if (stdout.isNotBlank()) stdout else stderr
+        } catch (e: Exception) {
+            "Error reading output: ${e.message}"
+        }
 
-        return pairShell.exitValue() == 0
+        if (!exited) {
+            pairShell.destroyForcibly()
+        }
+
+        return output.trim()
     }
 
     /**

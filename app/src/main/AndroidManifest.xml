@@ -11,6 +11,10 @@
         android:required="false"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions"/>
@@ -59,6 +63,14 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
         </service>
+
+        <service
+            android:name=".services.PairingService"
+            android:foregroundServiceType="connectedDevice" />
+
+        <receiver
+            android:name=".receivers.PairingReceiver"
+            android:exported="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
