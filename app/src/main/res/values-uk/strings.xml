@@ -47,7 +47,7 @@
     <string name="character_counter_pattern">%1$d/%2$d</string>
     <string name="clear">Очистити екран</string>
     <string name="clear_text_end_icon_content_description">Очистити текст</string>
-    <string name="code_hint">Код підключення</string>
+    <string name="code_hint">Код сполучення</string>
     <string name="command_hint">Команда оболонки</string>
     <string name="command_hint_waiting">"В очікуванні з'єднання…"</string>
     <string name="common_google_play_services_enable_button">Увімкнути</string>
