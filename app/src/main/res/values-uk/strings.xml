@@ -65,10 +65,10 @@
     <string name="common_google_play_services_update_title">Оновлення Google Play Services</string>
     <string name="common_google_play_services_updating_text">"%1$s не працюватиме без сервісів Google Play, які зараз оновлюються."</string>
     <string name="common_google_play_services_wear_update_text">Потрібна нова версія сервісів Google Play. Він буде оновлений найближчим часом.</string>
-    <string name="common_open_on_phone">Open on phone</string>
-    <string name="common_signin_button_text">Sign in</string>
-    <string name="common_signin_button_text_long">Sign in with Google</string>
-    <string name="contact_key">contact</string>
+    <string name="common_open_on_phone">Відкрити на телефоні</string>
+    <string name="common_signin_button_text">Увійти</string>
+    <string name="common_signin_button_text_long">Увійдіть через Google</string>
+    <string name="contact_key">контакт</string>
     <string name="contact_summary">Напишіть мені, щоб отримати допомогу</string>
     <string name="contact_title">Контакт</string>
     <string name="contact_url">mailto:tnnijmeh@gmail.com</string>
