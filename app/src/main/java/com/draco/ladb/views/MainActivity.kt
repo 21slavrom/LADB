@@ -189,7 +189,11 @@ class MainActivity : AppCompatActivity() {
 
                         lifecycleScope.launch(Dispatchers.IO) {
                             viewModel.adb.debug("Trying to pair...")
-                            val success = viewModel.adb.pair(port, code)
+                            val output = viewModel.adb.pair(port, code)
+                            val success = output.contains("Successfully paired")
+                            if (!success) {
+                                viewModel.adb.debug("Pairing failed output: $output")
+                            }
                             callback?.invoke(success)
                         }
                     }
@@ -223,6 +227,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.pair_notification -> {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+                    } else {
+                        val intent = Intent(this, com.draco.ladb.services.PairingService::class.java)
+                        startService(intent)
+                    }
+                } else {
+                    val intent = Intent(this, com.draco.ladb.services.PairingService::class.java)
+                    startService(intent)
+                }
+                true
+            }
+
             R.id.bookmarks -> {
                 val intent = Intent(this, BookmarksActivity::class.java)
                     .putExtra(Intent.EXTRA_TEXT, binding.command.text.toString())
@@ -269,6 +288,18 @@ class MainActivity : AppCompatActivity() {
             }
 
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 101) {
+            if (grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                val intent = Intent(this, com.draco.ladb.services.PairingService::class.java)
+                startService(intent)
+            } else {
+                Snackbar.make(binding.root, "Permission denied", Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
