@@ -1,6 +1,27 @@
+<div align="center">
+
+### **English** | [Русский](README_RU.md)
+
+</div>
+
 # LADB
 
 A local ADB shell for Android!
+
+# About this fork
+
+This is a fork of [tytydraco/LADB](https://github.com/tytydraco/LADB). The app works the same way; the changes are
+listed below.
+
+- The license check and the Google Play Services dependency are removed, along with unused permissions
+- Russian translation alongside the original English
+- Material 3 interface, with dynamic colors on Android 12 and up and a themed icon on Android 13 and up
+- Targets Android 17, including the local network permission that port discovery now requires
+- Deprecated platform APIs replaced with current ones, with the same behavior down to Android 8
+- More reliable first connection: discovery waits for the port, and the connection is verified and retried
+- The pairing is named LADB in the wireless debugging settings
+- Logging is stripped from release builds
+- Signed builds for every ABI are produced by GitHub Actions with the key from this repository
 
 # How does it work?
 

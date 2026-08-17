@@ -22,6 +22,9 @@ android {
             storePassword 'LADB'
             keyAlias 'ladb'
             keyPassword 'LADB'
+
+            enableV2Signing true
+            enableV3Signing true
         }
     }
 

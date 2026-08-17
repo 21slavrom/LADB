@@ -22,6 +22,8 @@ class ADB(private val context: Context) {
     companion object {
         const val MAX_OUTPUT_BUFFER_SIZE = 1024 * 16
         const val OUTPUT_BUFFER_DELAY_MS = 100L
+        const val CONNECT_ATTEMPTS = 3
+        const val ADB_KEY_NAME = "LADB"
 
         @SuppressLint("StaticFieldLeak")
         @Volatile
@@ -168,8 +170,8 @@ class ADB(private val context: Context) {
                 val nowTime = System.currentTimeMillis()
                 val pendingResolves = DnsDiscover.pendingResolves.get()
 
-                // Wait for pending DNS resolves to finish and the minimum scan time to elapse...
-                if (nowTime >= minDnsScanTime && !pendingResolves) {
+                // Wait for a port, for pending DNS resolves, and for the minimum scan time...
+                if (nowTime >= minDnsScanTime && !pendingResolves && DnsDiscover.adbPort != null) {
                     debug("DNS resolver done...")
                     break
                 }
@@ -194,10 +196,26 @@ class ADB(private val context: Context) {
             debug("Starting ADB server...")
             adb(false, listOf("start-server")).waitFor(1, TimeUnit.MINUTES)
 
-            val waitProcess = if (adbPort != null)
-                adb(false, listOf("connect", "localhost:$adbPort")).waitFor(1, TimeUnit.MINUTES)
-            else
-                adb(false, listOf("wait-for-device")).waitFor(1, TimeUnit.MINUTES)
+            var waitProcess = false
+
+            if (adbPort != null) {
+                // Connect exits successfully even when it attaches nothing
+                for (attempt in 1..CONNECT_ATTEMPTS) {
+                    adb(false, listOf("connect", "localhost:$adbPort")).waitFor(1, TimeUnit.MINUTES)
+
+                    if (getDevices().isNotEmpty()) {
+                        waitProcess = true
+                        break
+                    }
+
+                    if (attempt < CONNECT_ATTEMPTS) {
+                        debug("Could not connect, retrying...")
+                        Thread.sleep(2_000)
+                    }
+                }
+            } else {
+                waitProcess = adb(false, listOf("wait-for-device")).waitFor(1, TimeUnit.MINUTES)
+            }
 
             if (!waitProcess) {
                 debug("Your device didn't connect to LADB")
@@ -397,15 +415,15 @@ class ADB(private val context: Context) {
             flush()
         }
 
-        /* Continue once finished pairing (or 10s elapses) */
-        pairShell.waitFor(10, TimeUnit.SECONDS)
+        /* Continue once finished pairing (or 30s elapses) */
+        val paired = pairShell.waitFor(30, TimeUnit.SECONDS) && pairShell.exitValue() == 0
         pairShell.destroyForcibly().waitFor()
 
         val killShell = adb(false, listOf("kill-server"))
         killShell.waitFor(3, TimeUnit.SECONDS)
         killShell.destroyForcibly()
 
-        return pairShell.exitValue() == 0
+        return paired
     }
 
     /**
@@ -433,6 +451,8 @@ class ADB(private val context: Context) {
                 environment().apply {
                     put("HOME", context.filesDir.path)
                     put("TMPDIR", context.cacheDir.path)
+                    put("LOGNAME", ADB_KEY_NAME)
+                    put("HOSTNAME", ADB_KEY_NAME)
                 }
             }
 
