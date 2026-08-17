@@ -12,14 +12,16 @@
             android:key="@string/restart_key"
             android:summary="@string/restart_summary"
             android:title="@string/restart_title" />
-        <SwitchPreference
+        <com.draco.ladb.views.SwitchInfoPreference
             android:defaultValue="true"
             android:icon="@drawable/ic_baseline_home_repair_service_24"
             android:key="@string/auto_shell_key"
             android:summary="@string/auto_shell_summary"
-            android:title="@string/auto_shell_title" />
+            android:title="@string/auto_shell_title"
+            android:widgetLayout="@layout/preference_widget_material_switch" />
         <EditTextPreference
             android:defaultValue="16384"
+            android:dialogLayout="@layout/dialog_text_input"
             android:icon="@drawable/ic_baseline_home_repair_service_24"
             android:key="@string/buffer_size_key"
             android:summary="@string/buffer_size_summary"
@@ -27,6 +29,7 @@
         <EditTextPreference
             android:defaultValue="echo 'Success! ※\\(^o^)/※'"
             android:icon="@drawable/ic_baseline_home_repair_service_24"
+            android:dialogLayout="@layout/dialog_text_input"
             android:key="@string/startup_command_key"
             android:summary="@string/startup_command_summary"
             android:title="@string/startup_command_title" />

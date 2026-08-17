@@ -10,4 +10,26 @@
         <item name="android:layout_marginHorizontal">@dimen/bookmark_card_margin</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
+
+    <style name="OverflowMenu.Rounded" parent="Widget.Material3.PopupMenu.Overflow">
+        <item name="android:popupBackground">@drawable/popup_menu_bg_rounded</item>
+    </style>
+
+    <style name="ShellInputBox" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+    </style>
+
+    <style name="ThemeOverlay.LADB.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:windowBackground">@drawable/dialog_bg_rounded</item>
+        <item name="dialogCornerRadius">28dp</item>
+    </style>
+
+    <style name="ActionBar.Black" parent="Widget.Material3.ActionBar.Solid">
+        <item name="background">@android:color/black</item>
+    </style>
+
+    <style name="ThemeOverlay.LADB.DynamicColors" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />
 </resources>

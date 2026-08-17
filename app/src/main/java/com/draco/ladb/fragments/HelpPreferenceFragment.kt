@@ -5,11 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.content.edit
+import androidx.appcompat.app.AlertDialog
 import androidx.preference.*
 import com.draco.ladb.R
 import com.draco.ladb.utils.ADB
 import com.draco.ladb.views.MainActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlin.system.exitProcess
 
@@ -49,8 +49,8 @@ class HelpPreferenceFragment : PreferenceFragmentCompat() {
             getString(R.string.source_key) -> openURL(getString(R.string.source_url))
 
             else -> {
-                if (preference !is SwitchPreference && preference !is EditTextPreference) {
-                    MaterialAlertDialogBuilder(requireContext())
+                if (preference !is EditTextPreference) {
+                    AlertDialog.Builder(requireContext())
                         .setTitle(preference.title)
                         .setMessage(preference.summary)
                         .show()

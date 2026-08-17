@@ -2,7 +2,9 @@ package com.draco.ladb.viewmodels
 
 import android.app.Application
 import android.content.Context
+import android.view.LayoutInflater
 import android.widget.EditText
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.AndroidViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,36 +26,39 @@ class BookmarksActivityViewModel(application: Application): AndroidViewModel(app
         recyclerAdapter.updateList()
     }
 
-    fun add(context: Context, initialText: String) {
-        val editText = EditText(context)
-            .also {
-                it.setText(initialText)
-            }
+    /**
+     * Show a dialog with a single text field
+     */
+    private fun inputDialog(
+        context: Context,
+        @StringRes title: Int,
+        initialText: String,
+        onDone: (String) -> Unit
+    ) {
+        val view = LayoutInflater.from(context).inflate(R.layout.dialog_text_input, null)
+        val editText = view.findViewById<EditText>(android.R.id.edit)
+            .also { it.setText(initialText) }
+
         AlertDialog.Builder(context)
-            .setTitle(R.string.add)
-            .setView(editText)
-            .setPositiveButton(R.string.done) { _, _ ->
-                val text = editText.text.toString()
-                if (text.isNotEmpty())
-                    recyclerAdapter.add(text)
-            }
+            .setTitle(title)
+            .setView(view)
+            .setPositiveButton(R.string.done) { _, _ -> onDone(editText.text.toString()) }
             .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
+    fun add(context: Context, initialText: String) {
+        inputDialog(context, R.string.add, initialText) { text ->
+            if (text.isNotEmpty())
+                recyclerAdapter.add(text)
+        }
+    }
+
     fun edit(context: Context, text: String) {
-        val editText = EditText(context)
-            .also { it.setText(text) }
-        AlertDialog.Builder(context)
-            .setTitle(R.string.edit)
-            .setView(editText)
-            .setPositiveButton(R.string.done) { _, _ ->
-                val newText = editText.text.toString()
-                if (newText.isNotEmpty() && newText != text)
-                    recyclerAdapter.edit(text, newText)
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        inputDialog(context, R.string.edit, text) { newText ->
+            if (newText.isNotEmpty() && newText != text)
+                recyclerAdapter.edit(text, newText)
+        }
     }
 
     fun areYouSure(context: Context, callback: () -> Unit) {

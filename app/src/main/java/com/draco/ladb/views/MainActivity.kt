@@ -24,7 +24,6 @@ import com.draco.ladb.BuildConfig
 import com.draco.ladb.R
 import com.draco.ladb.databinding.ActivityMainBinding
 import com.draco.ladb.viewmodels.MainActivityViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var pairDialog: MaterialAlertDialogBuilder
+    private lateinit var pairDialog: AlertDialog.Builder
 
     private var lastCommand = ""
 
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView)
             .isAppearanceLightStatusBars = false
 
-        pairDialog = MaterialAlertDialogBuilder(this)
+        pairDialog = AlertDialog.Builder(this)
             .setTitle(R.string.pair_title)
             .setCancelable(false)
             .setView(R.layout.dialog_pair)
