@@ -8,12 +8,11 @@ import android.service.quicksettings.TileService
 import com.draco.ladb.views.MainActivity
 
 class QSTile : TileService() {
-    @SuppressLint("StartActivityAndCollapseDeprecated")
     override fun onClick() {
         super.onClick()
         val intent = Intent(applicationContext, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startActivityAndCollapse(
                 PendingIntent.getActivity(
@@ -24,7 +23,14 @@ class QSTile : TileService() {
                 )
             )
         } else {
-            startActivityAndCollapse(intent)
+            startActivityAndCollapseLegacy(intent)
         }
     }
+
+    /**
+     * The pending intent overload only exists on API 34 and up
+     */
+    @SuppressLint("StartActivityAndCollapseDeprecated")
+    @Suppress("DEPRECATION")
+    private fun startActivityAndCollapseLegacy(intent: Intent) = startActivityAndCollapse(intent)
 }

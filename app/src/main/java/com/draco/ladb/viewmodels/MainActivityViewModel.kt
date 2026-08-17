@@ -2,6 +2,7 @@ package com.draco.ladb.viewmodels
 
 import android.app.Application
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.nsd.NsdManager
 import android.os.Build
 import androidx.core.content.edit
@@ -30,7 +31,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     val adb = ADB.getInstance(getApplication<Application>().applicationContext)
     val dnsDiscover =
         DnsDiscover.getInstance(
-            application.applicationContext,
+            application.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager,
             application.applicationContext.getSystemService(Context.NSD_SERVICE) as NsdManager
         )
 

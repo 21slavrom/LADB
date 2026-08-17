@@ -2,10 +2,10 @@ package com.draco.ladb.fragments
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import androidx.core.content.edit
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.preference.*
 import com.draco.ladb.R
 import com.draco.ladb.utils.ADB
@@ -65,7 +65,7 @@ class HelpPreferenceFragment : PreferenceFragmentCompat() {
      * Open a URL for the user
      */
     private fun openURL(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         try {
             startActivity(intent)
         } catch (e: Exception) {

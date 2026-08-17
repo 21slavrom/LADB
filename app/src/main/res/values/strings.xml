@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LADB</string>
+    <string name="app_name" translatable="false">LADB</string>
 
     <string name="command_hint">Shell command</string>
     <string name="command_hint_waiting">Waiting for connection…</string>
@@ -23,12 +23,12 @@
 
     <string name="snackbar_intent_failed">Intent failed to start</string>
 
-    <string name="developer_url">https://t.me/modzzz21</string>
-    <string name="source_url">https://github.com/21slavrom/LADB</string>
-    <string name="tutorial_url">https://www.xda-developers.com/debloat-your-phone-run-adb-shell-commands-no-root-no-pc
+    <string name="developer_url" translatable="false">https://t.me/modzzz21</string>
+    <string name="source_url" translatable="false">https://github.com/21slavrom/LADB</string>
+    <string name="tutorial_url" translatable="false">https://www.xda-developers.com/debloat-your-phone-run-adb-shell-commands-no-root-no-pc
     </string>
 
-    <string name="paired_key">paired</string>
+    <string name="paired_key" translatable="false">paired</string>
     <string name="port_hint">Port</string>
 
     <string name="code_hint">Pairing code</string>
@@ -45,31 +45,31 @@
 
     <string name="unpair_title">Unpair</string>
     <string name="unpair_summary">Erasing any existing pairing information.</string>
-    <string name="unpair_key">unpair</string>
+    <string name="unpair_key" translatable="false">unpair</string>
 
     <string name="restart_title">Restart</string>
     <string name="restart_summary">Restart the ADB server to apply changed settings</string>
-    <string name="restart_key">restart</string>
+    <string name="restart_key" translatable="false">restart</string>
 
     <string name="auto_shell_title">Pair &amp; shell</string>
     <string name="auto_shell_summary">Automatically enter an ADB shell; disable to enter a regular, non-adb shell
         without pairing
     </string>
-    <string name="auto_shell_key">auto_shell</string>
+    <string name="auto_shell_key" translatable="false">auto_shell</string>
 
     <string name="buffer_size_title">Buffer size</string>
     <string name="buffer_size_summary">The size of the screen output buffer. Increasing this value will show more output
         on the screen at once at the cost of performance. (Default: 16384)
     </string>
-    <string name="buffer_size_key">buffer_size</string>
+    <string name="buffer_size_key" translatable="false">buffer_size</string>
 
     <string name="startup_command_title">Startup command</string>
     <string name="startup_command_summary">The command to run once the shell has begun</string>
-    <string name="startup_command_key">startup_command</string>
+    <string name="startup_command_key" translatable="false">startup_command</string>
 
     <string name="tutorial_title">Tutorial</string>
     <string name="tutorial_summary">View the tutorial from the XDA Developers page</string>
-    <string name="tutorial_key">tutorial</string>
+    <string name="tutorial_key" translatable="false">tutorial</string>
 
     <string name="error_waiting_title">Stuck on \"Waiting\"</string>
     <string name="error_waiting_summary">Either you entered the pairing information incorrectly, or your device is not
@@ -83,11 +83,11 @@
         will last until the next reboot. Connect the device to a PC and type: adb tcpip 5555
     </string>
 
-    <string name="developer_title">21Modz</string>
-    <string name="developer_summary">Telegram</string>
-    <string name="developer_key">developer</string>
+    <string name="developer_title" translatable="false">21Modz</string>
+    <string name="developer_summary" translatable="false">Telegram</string>
+    <string name="developer_key" translatable="false">developer</string>
 
     <string name="source_title">Source code</string>
     <string name="source_summary">View the source code on GitHub</string>
-    <string name="source_key">source</string>
+    <string name="source_key" translatable="false">source</string>
 </resources>

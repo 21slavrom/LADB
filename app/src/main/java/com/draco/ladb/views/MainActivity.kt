@@ -1,19 +1,22 @@
 package com.draco.ladb.views
 
+import android.Manifest
 import android.content.Intent
-import android.net.Uri
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.ScrollView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -41,6 +44,14 @@ class MainActivity : AppCompatActivity() {
     private var bookmarkGetResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         val text = it.data?.getStringExtra(Intent.EXTRA_TEXT) ?: return@registerForActivityResult
         binding.command.setText(text)
+    }
+
+    private val localNetworkRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (!granted) {
+            viewModel.adb.debug("Local network access denied, port discovery may fail")
+        }
+
+        pairAndStart()
     }
 
     private fun setupUI() {
@@ -116,8 +127,8 @@ class MainActivity : AppCompatActivity() {
             binding.outputScrollview.post {
                 binding.outputScrollview.fullScroll(ScrollView.FOCUS_DOWN)
                 binding.command.requestFocus()
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(binding.command, InputMethodManager.SHOW_FORCED)
+                WindowCompat.getInsetsController(window, binding.command)
+                    .show(WindowInsetsCompat.Type.ime())
             }
         }
 
@@ -134,6 +145,21 @@ class MainActivity : AppCompatActivity() {
         /* Prepare progress bar, pairing latch, and script executing */
         viewModel.adb.running.observe(this) { started ->
             setReadyForInput(started == true)
+        }
+    }
+
+    /**
+     * Android 17 blocks the local network until granted, which mDNS port discovery needs
+     */
+    private fun requestLocalNetworkAccess() {
+        val needsPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_LOCAL_NETWORK) !=
+                PackageManager.PERMISSION_GRANTED
+
+        if (needsPermission) {
+            localNetworkRequest.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
+        } else {
+            pairAndStart()
         }
     }
 
@@ -167,7 +193,7 @@ class MainActivity : AppCompatActivity() {
         /* Ensure we are not running this a second time around */
         if (viewModel.viewModelHasStartedADB.value != true) {
             if (viewModel.isPairing.value != true)
-                pairAndStart()
+                requestLocalNetworkAccess()
         }
     }
 
@@ -192,7 +218,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.tutorial_url)))
+                        val intent = Intent(Intent.ACTION_VIEW, getString(R.string.tutorial_url).toUri())
                         try {
                             startActivity(intent)
                         } catch (e: Exception) {

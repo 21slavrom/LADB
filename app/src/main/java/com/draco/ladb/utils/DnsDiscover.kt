@@ -1,22 +1,25 @@
 package com.draco.ladb.utils
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.draco.ladb.utils.DnsDiscover.Companion.adbPort
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 private const val TAG = "DNS"
 
 class DnsDiscover private constructor(
-    private val context: Context,
+    private val connectivityManager: ConnectivityManager,
     private val nsdManager: NsdManager
 ) {
     private var started = false
@@ -25,14 +28,16 @@ class DnsDiscover private constructor(
 
     private var pendingServices: MutableList<NsdServiceInfo> = Collections.synchronizedList(ArrayList())
 
+    private val resolveExecutor: Executor by lazy { Executors.newSingleThreadExecutor() }
+
     companion object {
         private var instance: DnsDiscover? = null
         var adbPort: Int? = null
         var pendingResolves = AtomicBoolean(false)
         var aliveTime: Long? = null
 
-        fun getInstance(context: Context, nsdManager: NsdManager): DnsDiscover {
-            return instance ?: DnsDiscover(context, nsdManager).also { instance = it }
+        fun getInstance(connectivityManager: ConnectivityManager, nsdManager: NsdManager): DnsDiscover {
+            return instance ?: DnsDiscover(connectivityManager, nsdManager).also { instance = it }
         }
     }
 
@@ -57,7 +62,6 @@ class DnsDiscover private constructor(
      * Returns the device's local IP address, or null if an error occurred.
      */
     fun getLocalIpAddress(): String? {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return null
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return null
 
@@ -172,7 +176,7 @@ class DnsDiscover private constructor(
         val ipAddress = getLocalIpAddress()
         Log.d("IP ADDRESS", ipAddress ?: "N/A")
 
-        val discoveredAddress = serviceInfo.host.hostAddress
+        val discoveredAddress = getHostAddress(serviceInfo)
         if (ipAddress != null && discoveredAddress != ipAddress) {
             Log.d(TAG, "IP does not match device, but not skipping...")
             //return
@@ -187,38 +191,107 @@ class DnsDiscover private constructor(
     }
 
     /**
+     * Returns the resolved host address of a service, or null if it has none.
+     */
+    private fun getHostAddress(serviceInfo: NsdServiceInfo): String? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            serviceInfo.hostAddresses.firstOrNull()?.hostAddress
+        } else {
+            @Suppress("DEPRECATION")
+            serviceInfo.host?.hostAddress
+        }
+    }
+
+    /**
      * When service gets discovered, attempt to resolve it.
      */
     private fun resolveService(service: NsdServiceInfo) {
-        // Create new listener.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            registerServiceInfoCallback(service)
+        } else {
+            resolveServiceLegacy(service)
+        }
+    }
+
+    /**
+     * Mark a service as no longer pending, and report when nothing is left to resolve.
+     */
+    private fun finishResolve(serviceInfo: NsdServiceInfo) {
+        pendingServices.removeAll { it.serviceName == serviceInfo.serviceName }
+
+        if (pendingServices.isEmpty()) {
+            pendingResolves.set(false)
+        }
+
+        Log.d(TAG, "Service resolved, pending: ${pendingServices.size}")
+    }
+
+    /**
+     * Resolve a service on API 34 and up, where a callback replaces the one-shot resolve
+     */
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    private fun registerServiceInfoCallback(service: NsdServiceInfo) {
+        val callback = object : NsdManager.ServiceInfoCallback {
+            private val handled = AtomicBoolean(false)
+
+            override fun onServiceUpdated(serviceInfo: NsdServiceInfo) {
+                if (!handled.compareAndSet(false, true)) {
+                    return
+                }
+
+                handleResolvedService(serviceInfo)
+                nsdManager.unregisterServiceInfoCallback(this)
+            }
+
+            override fun onServiceLost() {
+                if (!handled.compareAndSet(false, true)) {
+                    return
+                }
+
+                Log.d(TAG, "Service lost before it resolved: ${service.serviceName}")
+                nsdManager.unregisterServiceInfoCallback(this)
+            }
+
+            override fun onServiceInfoCallbackRegistrationFailed(errorCode: Int) {
+                Log.e(TAG, "Resolve failed: $errorCode: ${service.serviceName}")
+                resolveServiceLegacy(service)
+            }
+
+            override fun onServiceInfoCallbackUnregistered() {
+                finishResolve(service)
+            }
+        }
+
+        try {
+            nsdManager.registerServiceInfoCallback(service, resolveExecutor, callback)
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG, "Could not register callback: ${service.serviceName}", e)
+            resolveServiceLegacy(service)
+        }
+    }
+
+    /**
+     * Resolve a service on API 33 and below, and as a fallback when the callback fails
+     */
+    @Suppress("DEPRECATION")
+    private fun resolveServiceLegacy(service: NsdServiceInfo) {
         val resolveListener = object : NsdManager.ResolveListener {
             override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
                 Log.e(TAG, "Resolve failed: $errorCode: $serviceInfo")
 
                 when (errorCode) {
-                    NsdManager.FAILURE_ALREADY_ACTIVE -> {
-                        // Re-run the resolve until it resolves.
-                        resolveService(serviceInfo)
-                    }
+                    // Re-run the resolve until it resolves.
+                    NsdManager.FAILURE_ALREADY_ACTIVE -> resolveServiceLegacy(serviceInfo)
+                    else -> finishResolve(serviceInfo)
                 }
             }
 
             override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
                 handleResolvedService(serviceInfo)
-
-                // Remove service after it's been resolved.
-                pendingServices.removeAll { it.serviceName == serviceInfo.serviceName }
-
-                // If we're all done, let anyone waiting know.
-                if (pendingServices.isEmpty()) {
-                    pendingResolves.set(false)
-                }
-
-                Log.d(TAG, "Service resolved, pending: ${pendingServices.size}")
+                finishResolve(serviceInfo)
             }
         }
 
-        // Resolve service with listener.
         nsdManager.resolveService(service, resolveListener)
     }
 
