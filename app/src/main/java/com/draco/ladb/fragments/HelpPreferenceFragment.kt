@@ -9,7 +9,6 @@ import androidx.preference.*
 import com.draco.ladb.R
 import com.draco.ladb.utils.ADB
 import com.draco.ladb.views.MainActivity
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlin.system.exitProcess
@@ -49,10 +48,6 @@ class HelpPreferenceFragment : PreferenceFragmentCompat() {
             getString(R.string.developer_key) -> openURL(getString(R.string.developer_url))
             getString(R.string.source_key) -> openURL(getString(R.string.source_url))
             getString(R.string.contact_key) -> openURL(getString(R.string.contact_url))
-            getString(R.string.licenses_key) -> {
-                val intent = Intent(requireContext(), OssLicensesMenuActivity::class.java)
-                startActivity(intent)
-            }
 
             else -> {
                 if (preference !is SwitchPreference && preference !is EditTextPreference) {

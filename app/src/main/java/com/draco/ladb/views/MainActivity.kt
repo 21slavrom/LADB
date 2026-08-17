@@ -170,8 +170,6 @@ class MainActivity : AppCompatActivity() {
             if (viewModel.isPairing.value != true)
                 pairAndStart()
         }
-
-        viewModel.piracyCheck(this)
     }
 
     /**

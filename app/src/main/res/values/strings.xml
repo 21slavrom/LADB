@@ -95,10 +95,4 @@
     <string name="contact_title">Contact</string>
     <string name="contact_summary">Email me for assistance</string>
     <string name="contact_key">contact</string>
-
-    <string name="licenses_title">Licenses</string>
-    <string name="licenses_summary">View the open source licenses</string>
-    <string name="licenses_key">licenses</string>
-
-    <string name="pref_key_verified" translatable="false">verified</string>
 </resources>
