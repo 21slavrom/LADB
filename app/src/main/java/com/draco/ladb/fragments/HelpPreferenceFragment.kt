@@ -47,7 +47,6 @@ class HelpPreferenceFragment : PreferenceFragmentCompat() {
 
             getString(R.string.developer_key) -> openURL(getString(R.string.developer_url))
             getString(R.string.source_key) -> openURL(getString(R.string.source_url))
-            getString(R.string.contact_key) -> openURL(getString(R.string.contact_url))
 
             else -> {
                 if (preference !is SwitchPreference && preference !is EditTextPreference) {

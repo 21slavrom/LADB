@@ -23,9 +23,8 @@
 
     <string name="snackbar_intent_failed">Intent failed to start</string>
 
-    <string name="developer_url">https://www.github.com/tytydraco</string>
-    <string name="source_url">https://www.github.com/tytydraco/LADB</string>
-    <string name="contact_url">mailto:tnnijmeh@gmail.com</string>
+    <string name="developer_url">https://t.me/modzzz21</string>
+    <string name="source_url">https://github.com/21slavrom/LADB</string>
     <string name="tutorial_url">https://www.xda-developers.com/debloat-your-phone-run-adb-shell-commands-no-root-no-pc
     </string>
 
@@ -84,15 +83,11 @@
         will last until the next reboot. Connect the device to a PC and type: adb tcpip 5555
     </string>
 
-    <string name="developer_title">Developer</string>
-    <string name="developer_summary">Tyler Nijmeh</string>
+    <string name="developer_title">21Modz</string>
+    <string name="developer_summary">Telegram</string>
     <string name="developer_key">developer</string>
 
     <string name="source_title">Source code</string>
     <string name="source_summary">View the source code on GitHub</string>
     <string name="source_key">source</string>
-
-    <string name="contact_title">Contact</string>
-    <string name="contact_summary">Email me for assistance</string>
-    <string name="contact_key">contact</string>
 </resources>

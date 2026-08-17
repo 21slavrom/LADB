@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="command_hint">Shell команда</string>
+    <string name="command_hint_waiting">Ожидание соединения…</string>
+
+    <string name="bookmarks">Закладки</string>
+    <string name="last_command">Последняя команда</string>
+    <string name="help">Помощь</string>
+    <string name="more">Ещё</string>
+    <string name="share">Поделиться</string>
+    <string name="clear">Очистить экран</string>
+    <string name="add">Добавить</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="cancel">Отмена</string>
+    <string name="done">Готово</string>
+    <string name="pair">Подключить</string>
+    <string name="skip">Пропустить</string>
+    <string name="dismiss">Отклонить</string>
+
+    <string name="delete_confirm">Вы уверены, что хотите удалить это?</string>
+
+    <string name="snackbar_intent_failed">Не удалось запустить Intent</string>
+
+    <string name="port_hint">Порт</string>
+    <string name="code_hint">Код сопряжения</string>
+
+    <string name="pair_title">Информация о сопряжении</string>
+    <string name="pair_message">Вы должны подключить это устройство к LADB, используя код сопряжения со страницы «Беспроводная отладка» на странице настроек разработчика. Если вы не сделали этого раньше, нажмите «Помощь» для просмотра руководства.</string>
+
+    <string name="settings">Настройки</string>
+    <string name="troubleshooting">Поиск неисправностей</string>
+    <string name="about">О приложении</string>
+
+    <string name="unpair_title">Отключить</string>
+    <string name="unpair_summary">Удаление всей информации о сопряжении.</string>
+
+    <string name="restart_title">Перезапуск</string>
+    <string name="restart_summary">Перезапустите сервер ADB, чтобы применить измененные настройки</string>
+
+    <string name="auto_shell_title">Подключение &amp; shell</string>
+    <string name="auto_shell_summary">Автоматический вход в ADB shell; при отключении вход в обычную, не adb оболочку без сопряжения</string>
+
+    <string name="buffer_size_title">Размер буфера</string>
+    <string name="buffer_size_summary">Размер выходного буфера экрана. Увеличение этого значения приведет к одновременному отображению большего объёма выводимого текста на экране за счет производительности. (По умолчанию: 16384)</string>
+
+    <string name="startup_command_title">Команда запуска</string>
+    <string name="startup_command_summary">Команда, запускаемая после запуска shell</string>
+
+    <string name="tutorial_title">Руководство</string>
+    <string name="tutorial_summary">Просмотрите руководство на странице XDA Developers.</string>
+
+    <string name="error_waiting_title">Завис на \"Ожидание\"</string>
+    <string name="error_waiting_summary">Либо вы неправильно ввели информацию о сопряжении, либо ваше устройство не определяется. Сначала убедитесь, что беспроводная отладка действительно включена. Если это не помогло, попробуйте выполнить «Сброс настроек» в LADB, чтобы повторить попытку сопряжения.</string>
+
+    <string name="error_no_wireless_debugging_title">Нет переключателя «Беспроводная отладка»</string>
+    <string name="error_no_wireless_debugging_summary">Ваше устройство не поддерживает беспроводную отладку, необходимую для LADB. Альтернативно вы можете использовать ПК для включения этой функции на любых устройствах. Это будет работать до следующей перезагрузки. Подключите устройство к ПК и введите: adb tcpip 5555.</string>
+
+    <string name="source_title">Исходный код</string>
+    <string name="source_summary">Посмотреть исходный код на GitHub</string>
+</resources>

@@ -48,7 +48,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/about">
         <Preference
-            android:icon="@drawable/ic_baseline_person_24"
+            android:icon="@drawable/ic_baseline_telegram_24"
             android:key="@string/developer_key"
             android:summary="@string/developer_summary"
             android:title="@string/developer_title" />
@@ -57,10 +57,5 @@
             android:key="@string/source_key"
             android:summary="@string/source_summary"
             android:title="@string/source_title" />
-        <Preference
-            android:icon="@drawable/ic_baseline_email_24"
-            android:key="@string/contact_key"
-            android:summary="@string/contact_summary"
-            android:title="@string/contact_title" />
     </PreferenceCategory>
 </PreferenceScreen>

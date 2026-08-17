@@ -201,7 +201,7 @@ class ADB(private val context: Context) {
 
             if (!waitProcess) {
                 debug("Your device didn't connect to LADB")
-                debug("If a reboot doesn't work, please contact support")
+                debug("If a reboot doesn't work, please contact the developer")
 
                 if (isMobileDataAlwaysOnEnabled()) {
                     debug("Please disable 'Mobile data always on' in Developer Settings!")
