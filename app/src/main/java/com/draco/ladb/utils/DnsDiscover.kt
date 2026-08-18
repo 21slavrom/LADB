@@ -227,7 +227,7 @@ class DnsDiscover private constructor(
     }
 
     /**
-     * Resolve a service on API 34 and up, where a callback replaces the one-shot resolve
+     * Resolve a service on API 34 and up, where a callback replaces the one-shot resolve.
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     private fun registerServiceInfoCallback(service: NsdServiceInfo) {
@@ -271,7 +271,7 @@ class DnsDiscover private constructor(
     }
 
     /**
-     * Resolve a service on API 33 and below, and as a fallback when the callback fails
+     * Resolve a service on API 33 and below, and as a fallback when the callback fails.
      */
     @Suppress("DEPRECATION")
     private fun resolveServiceLegacy(service: NsdServiceInfo) {

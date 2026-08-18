@@ -46,6 +46,15 @@
 
     <string name="startup_command_title">Команда запуска</string>
     <string name="startup_command_summary">Команда, запускаемая после запуска shell</string>
+    <string name="startup_command_default">echo \'Успешно! ※\\(^o^)/※\'</string>
+
+    <string name="language_title">Язык</string>
+
+    <string-array name="language_entries">
+        <item>Системный</item>
+        <item>English</item>
+        <item>Русский</item>
+    </string-array>
 
     <string name="tutorial_title">Руководство</string>
     <string name="tutorial_summary">Просмотрите руководство на странице XDA Developers.</string>
@@ -58,4 +67,40 @@
 
     <string name="source_title">Исходный код</string>
     <string name="source_summary">Посмотреть исходный код на GitHub</string>
+
+    <string name="shell_entered_adb">Выполнен вход в adb shell</string>
+    <string name="shell_entered_non_adb">Выполнен вход в shell (без adb)</string>
+
+    <string name="debug_usb_debugging_on">Включение отладки по USB…</string>
+    <string name="debug_wireless_debugging_off_hint">Беспроводная отладка не включена!</string>
+    <string name="debug_wireless_debugging_path">Настройки -> Для разработчиков -> Отладка по Wi-Fi</string>
+    <string name="debug_wireless_debugging_await">Ожидание беспроводной отладки…</string>
+    <string name="debug_usb_debugging_off_hint">Отладка по USB не включена!</string>
+    <string name="debug_usb_debugging_path">Настройки -> Для разработчиков -> Отладка по USB</string>
+    <string name="debug_usb_debugging_await">Ожидание отладки по USB…</string>
+
+    <string name="debug_dns_done">Поиск завершён…</string>
+    <string name="debug_dns_timeout">Поиск занял слишком много времени! Пропуск…</string>
+    <string name="debug_dns_await">Ожидание поиска порта…</string>
+    <string name="debug_port_found">Найден лучший порт ADB: %d</string>
+    <string name="debug_port_missing">Порт ADB не найден, запасной вариант…</string>
+
+    <string name="debug_server_starting">Запуск сервера ADB…</string>
+    <string name="debug_connect_retry">Не удалось подключиться, повтор…</string>
+    <string name="debug_connect_failed">Ваше устройство не подключилось к LADB</string>
+    <string name="debug_connect_failed_hint">Если перезагрузка не помогает, обратитесь к разработчику</string>
+    <string name="debug_local_network_denied">Доступ к локальной сети запрещён, поиск порта может не сработать</string>
+
+    <string name="debug_mobile_data_hint">Отключите «Не отключать мобильный интернет» в настройках разработчика!</string>
+    <string name="debug_mobile_data_disabling">Отключение «Не отключать мобильный интернет»…</string>
+
+    <string name="debug_cycling_wireless_debugging">Перезапуск беспроводной отладки, подождите…</string>
+    <string name="debug_wireless_debugging_turning_off">Выключение беспроводной отладки…</string>
+    <string name="debug_wireless_debugging_turning_on">Включение беспроводной отладки…</string>
+
+    <string name="debug_shell_dead">Оболочка не отвечает, сброс…</string>
+
+    <string name="debug_pairing_requesting">Запрос информации о сопряжении</string>
+    <string name="debug_pairing_failed">Не удалось выполнить сопряжение! Повторная попытка…</string>
+    <string name="debug_pairing">Попытка сопряжения…</string>
 </resources>

@@ -86,19 +86,18 @@ class ADB(private val context: Context) {
         /* Get result of the command. */
         val linesRaw = BufferedReader(devicesProcess.inputStream.reader()).readLines()
 
-        /* Remove "List of devices attached" line if it exists (it should). */
-        val deviceLines = linesRaw.filterNot { it ->
-            it.contains("List of devices attached")
+        /* Split each line into the name and the state; headers and empty lines have neither. */
+        val deviceLines = linesRaw.map { it ->
+            it.split("\t")
+        }.filter { it ->
+            it.size == 2
         }
 
-        /* Just get first part with device name/IP and port. */
-        var deviceNames = deviceLines.map { it ->
-            it.split("\t").first()
-        }
-
-        /* Remove any empty lines. */
-        deviceNames = deviceNames.filterNot { it ->
-            it.isEmpty()
+        /* Offline and unauthorized devices take no commands, so ignore them. */
+        val deviceNames = deviceLines.filter { it ->
+            it.last().trim() == "device"
+        }.map { it ->
+            it.first()
         }
 
         for (name in deviceNames) {
@@ -129,7 +128,7 @@ class ADB(private val context: Context) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     cycleWirelessDebugging()
                 } else if (!isUSBDebuggingEnabled()) {
-                    debug("Turning on USB debugging...")
+                    debug(context.getString(R.string.debug_usb_debugging_on))
                     Settings.Global.putInt(
                         context.contentResolver,
                         Settings.Global.ADB_ENABLED,
@@ -143,9 +142,9 @@ class ADB(private val context: Context) {
             /* Check again... */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (!isWirelessDebuggingEnabled()) {
-                    debug("Wireless debugging is not enabled!")
-                    debug("Settings -> Developer options -> Wireless debugging")
-                    debug("Waiting for wireless debugging...")
+                    debug(context.getString(R.string.debug_wireless_debugging_off_hint))
+                    debug(context.getString(R.string.debug_wireless_debugging_path))
+                    debug(context.getString(R.string.debug_wireless_debugging_await))
 
                     while (!isWirelessDebuggingEnabled()) {
                         Thread.sleep(1_000)
@@ -153,9 +152,9 @@ class ADB(private val context: Context) {
                 }
             } else {
                 if (!isUSBDebuggingEnabled()) {
-                    debug("USB debugging is not enabled!")
-                    debug("Settings -> Developer options -> USB debugging")
-                    debug("Waiting for USB debugging...")
+                    debug(context.getString(R.string.debug_usb_debugging_off_hint))
+                    debug(context.getString(R.string.debug_usb_debugging_path))
+                    debug(context.getString(R.string.debug_usb_debugging_await))
 
                     while (!isUSBDebuggingEnabled()) {
                         Thread.sleep(1_000)
@@ -172,34 +171,34 @@ class ADB(private val context: Context) {
 
                 // Wait for a port, for pending DNS resolves, and for the minimum scan time...
                 if (nowTime >= minDnsScanTime && !pendingResolves && DnsDiscover.adbPort != null) {
-                    debug("DNS resolver done...")
+                    debug(context.getString(R.string.debug_dns_done))
                     break
                 }
 
                 // Or if 10 seconds pass...
                 if (nowTime >= maxTimeoutTime) {
-                    debug("DNS resolver took too long! Skipping...")
+                    debug(context.getString(R.string.debug_dns_timeout))
                     break
                 }
 
-                debug("Awaiting DNS resolver...")
+                debug(context.getString(R.string.debug_dns_await))
 
                 Thread.sleep(1_000)
             }
 
             val adbPort = DnsDiscover.adbPort
             if (adbPort != null)
-                debug("Best ADB port discovered: $adbPort")
+                debug(context.getString(R.string.debug_port_found, adbPort))
             else
-                debug("No ADB port discovered, fallback...")
+                debug(context.getString(R.string.debug_port_missing))
 
-            debug("Starting ADB server...")
+            debug(context.getString(R.string.debug_server_starting))
             adb(false, listOf("start-server")).waitFor(1, TimeUnit.MINUTES)
 
             var waitProcess = false
 
             if (adbPort != null) {
-                // Connect exits successfully even when it attaches nothing
+                // Connect exits successfully even when it attaches nothing.
                 for (attempt in 1..CONNECT_ATTEMPTS) {
                     adb(false, listOf("connect", "localhost:$adbPort")).waitFor(1, TimeUnit.MINUTES)
 
@@ -209,7 +208,7 @@ class ADB(private val context: Context) {
                     }
 
                     if (attempt < CONNECT_ATTEMPTS) {
-                        debug("Could not connect, retrying...")
+                        debug(context.getString(R.string.debug_connect_retry))
                         Thread.sleep(2_000)
                     }
                 }
@@ -218,11 +217,11 @@ class ADB(private val context: Context) {
             }
 
             if (!waitProcess) {
-                debug("Your device didn't connect to LADB")
-                debug("If a reboot doesn't work, please contact the developer")
+                debug(context.getString(R.string.debug_connect_failed))
+                debug(context.getString(R.string.debug_connect_failed_hint))
 
                 if (isMobileDataAlwaysOnEnabled()) {
-                    debug("Please disable 'Mobile data always on' in Developer Settings!")
+                    debug(context.getString(R.string.debug_mobile_data_hint))
                     Thread.sleep(5_000)
                 }
 
@@ -285,12 +284,14 @@ class ADB(private val context: Context) {
         }
 
         if (autoShell)
-            sendToShellProcess("echo 'Entered adb shell'")
+            sendToShellProcess("echo '${context.getString(R.string.shell_entered_adb)}'")
         else
-            sendToShellProcess("echo 'Entered non-adb shell'")
+            sendToShellProcess("echo '${context.getString(R.string.shell_entered_non_adb)}'")
 
-        val startupCommand =
-            sharedPrefs.getString(context.getString(R.string.startup_command_key), "echo 'Success! ※\\(^o^)/※'")!!
+        val startupCommand = sharedPrefs.getString(
+            context.getString(R.string.startup_command_key),
+            context.getString(R.string.startup_command_default)
+        )!!
         if (startupCommand.isNotEmpty())
             sendToShellProcess(startupCommand)
 
@@ -320,7 +321,7 @@ class ADB(private val context: Context) {
         if (secureSettingsGranted) {
             // Only turn it off if it's already on.
             if (isMobileDataAlwaysOnEnabled()) {
-                debug("Disabling 'Mobile data always on'...")
+                debug(context.getString(R.string.debug_mobile_data_disabling))
                 Settings.Global.putInt(
                     context.contentResolver,
                     "mobile_data_always_on",
@@ -343,10 +344,10 @@ class ADB(private val context: Context) {
 
         if (secureSettingsGranted) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                debug("Cycling wireless debugging, please wait...")
+                debug(context.getString(R.string.debug_cycling_wireless_debugging))
                 // Only turn it off if it's already on.
                 if (isWirelessDebuggingEnabled()) {
-                    debug("Turning off wireless debugging...")
+                    debug(context.getString(R.string.debug_wireless_debugging_turning_off))
                     Settings.Global.putInt(
                         context.contentResolver,
                         "adb_wifi_enabled",
@@ -355,7 +356,7 @@ class ADB(private val context: Context) {
                     Thread.sleep(3_000)
                 }
 
-                debug("Turning on wireless debugging...")
+                debug(context.getString(R.string.debug_wireless_debugging_turning_on))
                 Settings.Global.putInt(
                     context.contentResolver,
                     "adb_wifi_enabled",
@@ -363,7 +364,7 @@ class ADB(private val context: Context) {
                 )
                 Thread.sleep(3_000)
 
-                debug("Turning off wireless debugging...")
+                debug(context.getString(R.string.debug_wireless_debugging_turning_off))
                 Settings.Global.putInt(
                     context.contentResolver,
                     "adb_wifi_enabled",
@@ -371,7 +372,7 @@ class ADB(private val context: Context) {
                 )
                 Thread.sleep(3_000)
 
-                debug("Turning on wireless debugging...")
+                debug(context.getString(R.string.debug_wireless_debugging_turning_on))
                 Settings.Global.putInt(
                     context.contentResolver,
                     "adb_wifi_enabled",
@@ -392,7 +393,7 @@ class ADB(private val context: Context) {
 
             shellProcess?.waitFor()
             _running.postValue(false)
-            debug("Shell is dead, resetting...")
+            debug(context.getString(R.string.debug_shell_dead))
             adb(false, listOf("kill-server")).waitFor()
 
             Thread.sleep(3_000)

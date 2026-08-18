@@ -4,51 +4,56 @@ plugins {
 
 
 android {
-    compileSdk 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
+    buildToolsVersion = '37.0.0'
 
     defaultConfig {
-        applicationId "com.draco.ladb"
-        minSdk 26
-        targetSdk 37
-        versionCode 55
-        versionName "2.6"
+        applicationId = "com.draco.ladb"
+        minSdk = 26
+        targetSdk = 37
+        versionCode = 55
+        versionName = "2.6"
 
         resConfigs "en", "ru"
     }
 
     signingConfigs {
         release {
-            storeFile file('LADB.jks')
-            storePassword 'LADB'
-            keyAlias 'ladb'
-            keyPassword 'LADB'
+            storeFile = file('LADB.jks')
+            storePassword = 'LADB'
+            keyAlias = 'ladb'
+            keyPassword = 'LADB'
 
-            enableV2Signing true
-            enableV3Signing true
+            enableV2Signing = true
+            enableV3Signing = true
         }
     }
 
     splits {
         abi {
-            enable true
+            enable = true
             reset()
             include 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
-            universalApk true
+            universalApk = true
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     packaging {
@@ -58,11 +63,11 @@ android {
     }
 
     buildFeatures {
-        buildConfig true
-        viewBinding true
+        buildConfig = true
+        viewBinding = true
     }
 
-    namespace 'com.draco.ladb'
+    namespace = 'com.draco.ladb'
 }
 
 dependencies {

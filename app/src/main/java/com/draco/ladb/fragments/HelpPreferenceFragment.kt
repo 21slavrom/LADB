@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.core.net.toUri
+import androidx.core.os.LocaleListCompat
 import androidx.preference.*
 import com.draco.ladb.R
 import com.draco.ladb.utils.ADB
@@ -23,6 +25,17 @@ class HelpPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.help, rootKey)
+
+        findPreference<ListPreference>(getString(R.string.language_key))?.apply {
+            value = AppCompatDelegate.getApplicationLocales().toLanguageTags().substringBefore('-')
+
+            setOnPreferenceChangeListener { _, newValue ->
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.forLanguageTags(newValue as String)
+                )
+                true
+            }
+        }
     }
 
     private fun restartApp() {
@@ -49,7 +62,7 @@ class HelpPreferenceFragment : PreferenceFragmentCompat() {
             getString(R.string.source_key) -> openURL(getString(R.string.source_url))
 
             else -> {
-                if (preference !is EditTextPreference) {
+                if (preference !is DialogPreference) {
                     AlertDialog.Builder(requireContext())
                         .setTitle(preference.title)
                         .setMessage(preference.summary)

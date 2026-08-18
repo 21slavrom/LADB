@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     private val localNetworkRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (!granted) {
-            viewModel.adb.debug("Local network access denied, port discovery may fail")
+            viewModel.adb.debug(getString(R.string.debug_local_network_denied))
         }
 
         pairAndStart()
@@ -165,14 +165,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun pairAndStart() {
         if (viewModel.needsToPair()) {
-            viewModel.adb.debug("Requesting pairing information")
+            viewModel.adb.debug(getString(R.string.debug_pairing_requesting))
             askToPair { thisPairSuccess ->
                 if (thisPairSuccess) {
                     viewModel.setPairedBefore(true)
                     viewModel.startADBServer()
                 } else {
                     /* Failed; try again! */
-                    viewModel.adb.debug("Failed to pair! Trying again...")
+                    viewModel.adb.debug(getString(R.string.debug_pairing_failed))
                     runOnUiThread { pairAndStart() }
                 }
             }
@@ -211,7 +211,7 @@ class MainActivity : AppCompatActivity() {
                         dismiss()
 
                         lifecycleScope.launch(Dispatchers.IO) {
-                            viewModel.adb.debug("Trying to pair...")
+                            viewModel.adb.debug(getString(R.string.debug_pairing))
                             val success = viewModel.adb.pair(port, code)
                             callback?.invoke(success)
                         }

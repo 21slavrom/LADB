@@ -29,20 +29,29 @@ jobs:
         uses: android-actions/setup-android@v4
 
       - name: Install SDK packages
-        run: sdkmanager --install "platform-tools" "platforms;android-37.0" "build-tools;37.0.0"
-
-      - name: Read version from build.gradle
-        run: echo "VERSION=$(grep -oP 'versionName\s+"\K[^"]+' app/build.gradle)" >> "$GITHUB_ENV"
+        run: sdkmanager --install "platforms;android-37.1" "build-tools;37.0.0"
 
       - name: Build signed release APKs
         run: |
           chmod +x ./gradlew
           ./gradlew assembleRelease --no-daemon
 
+      - name: Read the built version
+        working-directory: app/build/outputs/apk/release
+        run: |
+          VERSION=$(jq -r '.elements[0].versionName' output-metadata.json)
+
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "::error::Could not read versionName from output-metadata.json"
+            exit 1
+          fi
+
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
       - name: Rename APKs
         working-directory: app/build/outputs/apk/release
         run: |
-          mv app-universal-release.apk   "LADB_${VERSION}.apk"
+          mv app-universal-release.apk   "LADB_${VERSION}-universal.apk"
           mv app-arm64-v8a-release.apk   "LADB_${VERSION}-arm64-v8a.apk"
           mv app-armeabi-v7a-release.apk "LADB_${VERSION}-armeabi-v7a.apk"
           mv app-x86-release.apk         "LADB_${VERSION}-x86.apk"
@@ -52,11 +61,11 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: "v${{ env.VERSION }}"
-          name: "LADB ${{ env.VERSION }}"
+          name: "${{ env.VERSION }}"
           draft: ${{ inputs.draft }}
           fail_on_unmatched_files: true
           files: |
-            app/build/outputs/apk/release/LADB_${{ env.VERSION }}.apk
+            app/build/outputs/apk/release/LADB_${{ env.VERSION }}-universal.apk
             app/build/outputs/apk/release/LADB_${{ env.VERSION }}-arm64-v8a.apk
             app/build/outputs/apk/release/LADB_${{ env.VERSION }}-armeabi-v7a.apk
             app/build/outputs/apk/release/LADB_${{ env.VERSION }}-x86.apk

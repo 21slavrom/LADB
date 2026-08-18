@@ -66,6 +66,22 @@
     <string name="startup_command_title">Startup command</string>
     <string name="startup_command_summary">The command to run once the shell has begun</string>
     <string name="startup_command_key" translatable="false">startup_command</string>
+    <string name="startup_command_default">echo \'Success! ※\\(^o^)/※\'</string>
+
+    <string name="language_title">Language</string>
+    <string name="language_key" translatable="false">language</string>
+
+    <string-array name="language_entries">
+        <item>System default</item>
+        <item>English</item>
+        <item>Русский</item>
+    </string-array>
+
+    <string-array name="language_values" translatable="false">
+        <item></item>
+        <item>en</item>
+        <item>ru</item>
+    </string-array>
 
     <string name="tutorial_title">Tutorial</string>
     <string name="tutorial_summary">View the tutorial from the XDA Developers page</string>
@@ -90,4 +106,40 @@
     <string name="source_title">Source code</string>
     <string name="source_summary">View the source code on GitHub</string>
     <string name="source_key" translatable="false">source</string>
+
+    <string name="shell_entered_adb">Entered adb shell</string>
+    <string name="shell_entered_non_adb">Entered non-adb shell</string>
+
+    <string name="debug_usb_debugging_on">Turning on USB debugging…</string>
+    <string name="debug_wireless_debugging_off_hint">Wireless debugging is not enabled!</string>
+    <string name="debug_wireless_debugging_path">Settings -> Developer options -> Wireless debugging</string>
+    <string name="debug_wireless_debugging_await">Waiting for wireless debugging…</string>
+    <string name="debug_usb_debugging_off_hint">USB debugging is not enabled!</string>
+    <string name="debug_usb_debugging_path">Settings -> Developer options -> USB debugging</string>
+    <string name="debug_usb_debugging_await">Waiting for USB debugging…</string>
+
+    <string name="debug_dns_done">DNS resolver done…</string>
+    <string name="debug_dns_timeout">DNS resolver took too long! Skipping…</string>
+    <string name="debug_dns_await">Awaiting DNS resolver…</string>
+    <string name="debug_port_found">Best ADB port discovered: %d</string>
+    <string name="debug_port_missing">No ADB port discovered, fallback…</string>
+
+    <string name="debug_server_starting">Starting ADB server…</string>
+    <string name="debug_connect_retry">Could not connect, retrying…</string>
+    <string name="debug_connect_failed">Your device didn\'t connect to LADB</string>
+    <string name="debug_connect_failed_hint">If a reboot doesn\'t work, please contact the developer</string>
+    <string name="debug_local_network_denied">Local network access denied, port discovery may fail</string>
+
+    <string name="debug_mobile_data_hint">Please disable \'Mobile data always on\' in Developer Settings!</string>
+    <string name="debug_mobile_data_disabling">Disabling \'Mobile data always on\'…</string>
+
+    <string name="debug_cycling_wireless_debugging">Cycling wireless debugging, please wait…</string>
+    <string name="debug_wireless_debugging_turning_off">Turning off wireless debugging…</string>
+    <string name="debug_wireless_debugging_turning_on">Turning on wireless debugging…</string>
+
+    <string name="debug_shell_dead">Shell is dead, resetting…</string>
+
+    <string name="debug_pairing_requesting">Requesting pairing information</string>
+    <string name="debug_pairing_failed">Failed to pair! Trying again…</string>
+    <string name="debug_pairing">Trying to pair…</string>
 </resources>
